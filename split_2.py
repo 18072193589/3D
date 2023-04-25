@@ -156,13 +156,13 @@ class oil():
                     if (img[j, i] == 51 and ((img[j + 1, i] == 153)or img[j,i+1]==153 or img[j,i-1]==153))  or (img[j, i] == 102 and ((img[j + 1, i] == 153)or img[j,i+1]==153 or img[j,i-1]==153)):
                         img[j, i] = 255
                         CORUP.append([j, i])
-                    elif img[j - 1, i] == 0 and img[j, i] == 51:
+                    elif (img[j - 1, i] == 0 or img[j,i-1] == 0 or img[j,i+1] == 0) and img[j, i] == 51:
                         # img[j, i] = 255
                         SCLUP.append([j, i])
-                    elif img[j - 1, i] == 51 and img[j, i] == 102:
+                    elif (img[j - 1, i] == 51 or img[j,i-1] == 51 or img[j,i+1] == 51) and img[j, i] == 102:
                         # img[j, i] = 255
                         TRFUP.append([j, i])
-                    elif img[j, i] == 153 and img[j + 1, i] == 204:
+                    elif img[j, i] == 153 and (img[j + 1, i] == 204 or img[j+1,i+1] == 204 or img[j+1,i-1] == 204):
                         # img[j, i] = 255
                         CORDOWN.append([j, i])
             lx, ly = CORDOWN[0]
