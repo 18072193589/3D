@@ -10,114 +10,12 @@ import pandas as pd
 class oil():
 
     def __init__(self):
-        #先边界化，再二值化
-        self.name=""
+        self.realh=13/796#像素与实际尺寸间的关系
+        self.realw=16/1160#像素与实际尺寸间的关系
+        self.sum=32#图片数量，即一份巩膜分成多少个角度
+        self.name="3D"#存储结果的文件名
         self.path=r'D:\NET-MODEL\3D\img_msk'#目标文件的地址
-        self.save_path=r'D:\NET-MODEL\3D\img_after'#存储Canny文件的地址
-        self.save_path2=r'D:\NET-MODEL\3D\img_erzhi'#存储二值文件的地址
-        self.save_csv=r'D:\NET-MODEL\3D\csv'#存储csv
-    def Canny(self):
-        self.path
-        filelist = os.listdir(self.path)  # 获取文件路径
-        i = 1
-        for item in filelist:
-            total_num = len(filelist)  # 获取文件长度（个数）
-            self.name=item.split(".")[0]
-            #转化为灰度图像
-            img_name = os.path.join(self.path,item)
-            img = cv2.imread(img_name)
-            gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-            #sobel算子，对效率要求较高，对纹理不太关心的时候。
-
-            # soblex = cv2.Sobel(gray,cv2.CV_64F,1,0,ksize=3)
-            # sobley = cv2.Sobel(gray,cv2.CV_64F,0,1,ksize=3)
-            # sobel = cv2.addWeighted(soblex,0.5,sobley,0,5,0)
-            # cv2.imshow('Sobel',sobel)
-            # cv2.waitKey(0)
-            # cv2.destroyAllWindows()
-
-            #Canny算子
-            canny = cv2.Canny(gray,100,200)
-            save = os.path.join(self.save_path,'00' + format(str(i), '0>3s')+".png")
-            cv2.imwrite(save,canny)
-            i=i+1
-            # cv2.imshow('Canny',canny)
-            # cv2.waitKey(0)
-            # cv2.destroyAllWindows()
-
-    def get_line_position(self):
-        print("==========================生成图表中===========================")
-        flag=0
-        filelist = os.listdir(self.save_path2)
-        anglex,angley = self.XYZ()
-        out=[[],[],[]]
-        for item in filelist:
-            img_name = os.path.join(self.save_path2,item)
-            image = cv2.imread(img_name)
-            ans = [[],[],[]]
-            list_x = []
-            list_y = []
-            list_z = []
-            max_y=0
-            max_x=0
-            # y_len = len(image)
-            # print(y_len)
-            for i in range(len(image[0])):  # 遍历列数
-                for j in range(len(image)):  # 遍历行数
-                    if (image[j][i] == [0,0,0]).all():
-                        y=len(image) - j
-                        x=i
-                        list_x.append(x)
-                        list_y.append(y)
-                        if(max_y<y):
-                            max_y=y
-                            max_x=x
-                        # break
-            msk_name=os.path.join(r"D:\Deep-Learing\NetModel\3D\img_msk",item)
-            #a = self.XYZ(msk_name)
-            list_x=[item -anglex[flag] for item in list_x]
-            list_y=[item +angley[flag] for item in list_y]
-            list_z=list_y
-            list_y=[item*(math.sin(math.pi/16*flag)) for item in list_x]
-            list_x=[item*(math.cos(math.pi/16*flag)) for item in list_x]
-            ans[0]=[item*16/1160 for item in list_x]
-            ans[1]=[item*16/1160 for item in list_y]
-            ans[2]=[item*13/796 for item in list_z]
-            out[0].extend(ans[0])
-            out[1].extend(ans[1])
-            out[2].extend(ans[2])
-            #save = os.path.join(self.save_csv,'00' + format(str(flag), '0>3s')+".csv")
-            #print("已完成"+str((flag+1)/32*100)+"%"+"当前角度"+str(180/16*(flag)%360)+"°")
-            flag=flag+1
-        print("转置中")
-        dataframe = pd.DataFrame(out).T
-        save = os.path.join(self.save_csv,self.name+'result'+".csv")
-        dataframe.to_csv(save)
-    def erzhi(self):
-        i=1
-        filelist = os.listdir(self.save_path)  # 获取文件路径
-        for item in filelist:
-            img_name = os.path.join(self.save_path,item)
-            img = cv2.imread(img_name)
-            ret,mask_all = cv2.threshold(src=img,
-                                         thresh=127,#阈值
-                                         maxval=255,
-                                         type=cv2.THRESH_BINARY)
-            # plt.imshow(mask_all, cmap='gray')
-            # plt.show()
-            # plt.title("全局阈值")
-            save = os.path.join(self.save_path2,'00' + format(str(i), '0>3s')+".png")
-            i=i+1
-            cv2.imwrite(save,img)
-        filelist = os.listdir(self.save_path2)
-        i=1
-        for item in filelist:
-            fname = os.path.join(self.save_path2, item)
-            im = Image.open(fname)
-            im_inverted = ImageChops.invert(im)
-            save = os.path.join(self.save_path2, '00' + format(str(i), '0>3s') + ".png")
-            im_inverted.save(save)
-            i=i+1
+        self.save_csv=r'D:\NET-MODEL\3D\csv'#存储csv的地址
     def XYZ(self):
         filelist = os.listdir(self.path)
         SCLUP_ = [[],[],[]]  # 巩膜镜上表面
@@ -127,6 +25,7 @@ class oil():
         ALL=[[],[],[],[],[],[],[],[],[],[],[],[]]
         flag=0
         self.name="test"
+        self.sum=self.sum/2
         print("==================图像处理中=====================")
         for item in filelist:
             #self.name=item.split(".")[0]
@@ -134,6 +33,7 @@ class oil():
             img = cv2.imread(img_name, cv2.IMREAD_GRAYSCALE)  # 灰度图像
             img = np.array(img)
             x, y = img.shape
+            t=x
             SCLUP = []  # 巩膜镜上表面
             SCLUP_x = []
             SCLUP_y = []
@@ -193,7 +93,7 @@ class oil():
                 # print(x)
                 # y=y.astype('uint8')
                 img[x, y] = 255
-            for x in range(796):
+            for x in range(t):
                 y = -K * x + b1  # 左右两点之间垂线方程
                 y = round(y)
                 # print(x)
@@ -208,33 +108,33 @@ class oil():
                     res[0]=res[i]
             a = (res[0])  # 角膜上表面的中点
             print("坐标轴中心:"+str(a))
-            print("已完成" + str((flag + 1) / 32 * 100) + "%" + "当前角度" + str(180 / 16 * (flag) % 360) + "°")
+            print("已完成" + str((flag + 1) / 32 * 100) + "%" + "当前角度" + str(180 / self.sum * (flag) % 360) + "°")
             ansx=(a[1])
             ansy=(a[0])
             for item in SCLUP:
-                SCLUP_x.append((item[1]-a[1])*16/1160)
-                SCLUP_y.append(-(item[0]-a[0])*13/796)
+                SCLUP_x.append((item[1]-a[1])*self.realw)
+                SCLUP_y.append(-(item[0]-a[0])*self.realh)
             for item in TRFUP:
-                TRFUP_x.append((item[1]-a[1])*16/1160)
-                TRFUP_y.append(-(item[0]-a[0])*13/796)
+                TRFUP_x.append((item[1]-a[1])*self.realw)
+                TRFUP_y.append(-(item[0]-a[0])*self.realh)
             for item in CORUP:
-                CORUP_x.append((item[1]-a[1])*16/1160)
-                CORUP_y.append(-(item[0]-a[0])*13/796)
+                CORUP_x.append((item[1]-a[1])*self.realw)
+                CORUP_y.append(-(item[0]-a[0])*self.realh)
             for item in CORDOWN:
-                CORDOWN_x.append((item[1]-a[1])*16/1160)
-                CORDOWN_y.append(-(item[0]-a[0])*13/796)
+                CORDOWN_x.append((item[1]-a[1])*self.realw)
+                CORDOWN_y.append(-(item[0]-a[0])*self.realh)
             SCLUP_z=SCLUP_y
-            SCLUP_y=[item*(math.sin(math.pi/16*flag)) for item in SCLUP_x]
-            SCLUP_x=[item*(math.cos(math.pi/16*flag)) for item in SCLUP_x]
+            SCLUP_y=[item*(math.sin(math.pi/self.sum*flag)) for item in SCLUP_x]
+            SCLUP_x=[item*(math.cos(math.pi/self.sum*flag)) for item in SCLUP_x]
             TRFUP_z=TRFUP_y
-            TRFUP_y=[item*(math.sin(math.pi/16*flag)) for item in TRFUP_x]
-            TRFUP_x=[item*(math.cos(math.pi/16*flag)) for item in TRFUP_x]
+            TRFUP_y=[item*(math.sin(math.pi/self.sum*flag)) for item in TRFUP_x]
+            TRFUP_x=[item*(math.cos(math.pi/self.sum*flag)) for item in TRFUP_x]
             CORUP_z=CORUP_y
-            CORUP_y=[item*(math.sin(math.pi/16*flag)) for item in CORUP_x]
-            CORUP_x=[item*(math.cos(math.pi/16*flag)) for item in CORUP_x]
+            CORUP_y=[item*(math.sin(math.pi/self.sum*flag)) for item in CORUP_x]
+            CORUP_x=[item*(math.cos(math.pi/self.sum*flag)) for item in CORUP_x]
             CORDOWN_z=CORDOWN_y
-            CORDOWN_y=[item*(math.sin(math.pi/16*flag)) for item in CORDOWN_x]
-            CORDOWN_x=[item*(math.cos(math.pi/16*flag)) for item in CORDOWN_x]
+            CORDOWN_y=[item*(math.sin(math.pi/self.sum*flag)) for item in CORDOWN_x]
+            CORDOWN_x=[item*(math.cos(math.pi/self.sum*flag)) for item in CORDOWN_x]
             ALL[0].extend(SCLUP_x)
             ALL[1].extend(SCLUP_y)
             ALL[2].extend(SCLUP_z)
