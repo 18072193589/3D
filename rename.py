@@ -7,7 +7,7 @@ class BatchRename():
     '''
 
     def __init__(self):
-        self.path = r'D:\Deep-Learing\NetModel\3D\img_msk'  # 表示需要命名处理的文件夹
+        self.path = r'D:\Deep-Learing\NetModel\3D\img_msk'  # 表示需要命名处理的文件夹~
 
         self.path2 = r'D:\yolov7\yolov7-pytorch-master\Messdior1200\JPEGImages2'  # 表示需要命名处理的文件夹
     def rename(self):
