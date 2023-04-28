@@ -14,8 +14,9 @@ class oil():
         self.realw=16/1160#像素与实际尺寸间的关系
         self.sum=32#图片数量，即一份巩膜分成多少个角度
         self.name="3D"#存储结果的文件名
-        self.path=r'D:\NET-MODEL\3D\img_msk'#目标文件的地址
-        self.save_csv=r'D:\NET-MODEL\3D\csv'#存储csv的地址
+        self.path=r'D:\Deep-Learing\NetModel\3D\img_msk'#目标文件的地址
+        self.save_csv=r'D:\Deep-Learing\NetModel\3D\csv'#存储csv的地址
+        self.list_name=[' ', 'x1', 'y1', 'z1', 'x2', 'y2', 'z2', 'x3', 'y3', 'z3', 'x4', 'y4', 'z4']#列名
     def XYZ(self):
         filelist = os.listdir(self.path)
         SCLUP_ = [[],[],[]]  # 巩膜镜上表面
@@ -155,7 +156,7 @@ class oil():
         print("转置中")
         dataframe = pd.DataFrame(ALL).T
         save = os.path.join(self.save_csv,self.name+'result'+".csv")
-        dataframe.to_csv(save)
+        dataframe.to_csv(save,header=True,index_label=self.list_name)
         return()
     def all(self):
         T.XYZ()
