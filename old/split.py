@@ -12,8 +12,8 @@ class oil():
     def __init__(self):
         #先边界化，再二值化
         self.name=""
-        self.path=r'D:\Deep-Learing\NetModel\3D\img_msk'#目标文件的地址
-        self.save_path=r'D:\Deep-Learing\NetModel\3D\img_after'#存储Canny文件的地址
+        self.path= r'/img_msk'  #目标文件的地址
+        self.save_path= r'/img_after'  #存储Canny文件的地址
         self.save_path2=r'D:\Deep-Learing\NetModel\3D\img_erzhi'#存储二值文件的地址
         self.save_csv=r'D:\Deep-Learing\NetModel\3D\csv'#存储csv
     def Canny(self):
@@ -73,7 +73,7 @@ class oil():
                             max_y=y
                             max_x=x
                         # break
-            msk_name=os.path.join(r"D:\Deep-Learing\NetModel\3D\img_msk",item)
+            msk_name=os.path.join(r"/img_msk", item)
             #a = self.XYZ(msk_name)
             list_x=[item -anglex[flag] for item in list_x]
             list_y=[item +angley[flag] for item in list_y]
