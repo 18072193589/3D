@@ -26,7 +26,6 @@ class oil():
         ALL=[[],[],[],[],[],[],[],[],[],[],[],[]]
         flag=0
         self.name="test"
-        self.sum=self.sum/2
         print("==================图像处理中=====================")
         for item in filelist:
             #self.name=item.split(".")[0]
@@ -54,13 +53,13 @@ class oil():
             for i in range(y - 1):
                 for j in range(x - 1):
                     #
-                    if (img[j, i] == 51 and ((img[j + 1, i] == 153)or img[j,i+1]==153 or img[j,i-1]==153))  or (img[j, i] == 102 and ((img[j + 1, i] == 153)or img[j,i+1]==153 or img[j,i-1]==153)):
-                        img[j, i] = 255
+                    if ((img[j - 1, i] == 51 or img[j-1,i-1] == 51 or img[j-1,i+1] == 51) and img[j, i] == 153) or ((img[j - 1, i] == 102 or img[j-1,i-1] == 102 or img[j-1,i+1] == 102) and img[j, i] == 153):
+                        #img[j, i] = 255
                         CORUP.append([j, i])
-                    elif (img[j - 1, i] == 0 or img[j,i-1] == 0 or img[j,i+1] == 0) and img[j, i] == 51:
+                    elif (img[j - 1, i] == 0 or img[j-1,i-1] == 0 or img[j-1,i+1] == 0) and img[j, i] == 51:
                         # img[j, i] = 255
                         SCLUP.append([j, i])
-                    elif (img[j - 1, i] == 51 or img[j,i-1] == 51 or img[j,i+1] == 51) and img[j, i] == 102:
+                    elif (img[j - 1, i] == 51 or img[j-1,i-1] == 51 or img[j-1,i+1] == 51) and img[j, i] == 102:
                         # img[j, i] = 255
                         TRFUP.append([j, i])
                     elif img[j, i] == 153 and (img[j + 1, i] == 204 or img[j+1,i+1] == 204 or img[j+1,i-1] == 204):
@@ -155,7 +154,7 @@ class oil():
             flag=flag+1
         print("转置中")
         dataframe = pd.DataFrame(ALL).T
-        save = os.path.join(self.save_csv,self.name+'result3'+".csv")
+        save = os.path.join(self.save_csv,self.name+'result5'+".csv")
         dataframe.to_csv(save,header=True,index_label=self.list_name)
         return()
     def all(self):

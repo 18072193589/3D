@@ -3,7 +3,7 @@ import matplotlib as mb
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
-csv = pd.read_csv(r'D:\Deep-Learing\NetModel\3D\csv\testresult.csv')  # 文件路径
+csv = pd.read_csv(r'D:\Deep-Learing\NetModel\3D\csv\testresult5.csv')  # 文件路径
 ax = plt.subplot(111, projection='3d')  # 创建一个三维的绘图工程
 #  将数据点分成三部分画，在颜色上有区分度
 ax.scatter(csv.x1, csv.y1, csv.z1,s=0.1,c="b",marker=",")  # 绘制数据点
