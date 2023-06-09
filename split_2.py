@@ -155,7 +155,7 @@ class oil():
             flag=flag+1
         print("转置中")
         dataframe = pd.DataFrame(ALL).T
-        save = os.path.join(self.save_csv,self.name+'result'+".csv")
+        save = os.path.join(self.save_csv,self.name+'result3'+".csv")
         dataframe.to_csv(save,header=True,index_label=self.list_name)
         return()
     def all(self):
